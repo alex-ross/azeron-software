@@ -60,16 +60,16 @@
       "extraFiles": [
         {
           "from": "firmware",
-          "to": "firmware",
+          "to": "resources/firmware",
           "filter": ["**/*.bin", "**/*.hex"]
         },
         {
           "from": "app/src/resources/proving-ground-profiles",
-          "to": "src/resources/proving-ground-profiles"
+          "to": "resources/proving-ground-profiles"
         },
         {
           "from": "app/src/resources/tray.png",
-          "to": "src/resources/tray.png"
+          "to": "resources/tray.png"
         },
         {
           "from": "assets/99-azeron.rules",
@@ -77,7 +77,7 @@
         },
         {
           "from": "app/update-notes.json",
-          "to": "update-notes.json"
+          "to": "resources/update-notes.json"
         }
       ]
     },
@@ -97,20 +97,20 @@
       "extraFiles": [
         {
           "from": "firmware",
-          "to": "firmware",
+          "to": "Resources/firmware",
           "filter": ["**/*.bin", "**/*.hex"]
         },
         {
           "from": "app/src/resources/proving-ground-profiles",
-          "to": "src/resources/proving-ground-profiles"
+          "to": "Resources/proving-ground-profiles"
         },
         {
           "from": "app/src/resources/tray.png",
-          "to": "src/resources/tray.png"
+          "to": "Resources/tray.png"
         },
         {
           "from": "app/update-notes.json",
-          "to": "update-notes.json"
+          "to": "Resources/update-notes.json"
         }
       ]
     },

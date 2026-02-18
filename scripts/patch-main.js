@@ -8,8 +8,7 @@ const path = require("path");
 
 const MAIN_JS = path.join(__dirname, "..", "app", "dist", "main-process.js");
 const targetArg = (process.argv.find((a) => a.startsWith("--platform=")) || "").split("=")[1];
-const patchTarget =
-  (process.env.AZERON_PATCH_TARGET || process.env.AZERON_TARGET || targetArg || process.platform).toLowerCase();
+const patchTarget = (process.env.AZERON_PATCH_TARGET || targetArg || process.platform).toLowerCase();
 const isLinux = patchTarget.startsWith("linux");
 const isMac = patchTarget === "darwin" || patchTarget === "mac" || patchTarget === "osx";
 
@@ -51,14 +50,33 @@ patch(
 );
 
 // Patch 2: Fix tray icon path - use PNG instead of ICO, resolve via app path
-// The tray icon is in extraFiles, accessible relative to the executable directory.
+// The tray icon is in extraFiles under the app's resources directory.
 // In a packaged Electron app, __dirname inside asar doesn't help for extraFiles.
-// Use process.resourcesPath to find the app root (extraFiles are at resourcesPath/..)
-patch(
-  "fix-tray-icon",
-  'new e.Tray("src/resources/tray.ico")',
-  'new e.Tray(require("path").join(require("process").resourcesPath,"..","src","resources","tray.png"))'
-);
+// Use process.resourcesPath to find the app root (extraFiles are at resourcesPath)
+(() => {
+  const name = "fix-tray-icon";
+  const searches = [
+    'new e.Tray("src/resources/tray.ico")',
+    'new e.Tray(require("path").join(require("process").resourcesPath,"..","src","resources","tray.png"))'
+  ];
+  const replace = 'new e.Tray(require("path").join(process.resourcesPath,"tray.png"))';
+  if (code.includes(replace)) {
+    console.log(`PATCH SKIP: "${name}" already applied for target ${patchTarget}`);
+    return;
+  }
+  const search = searches.find((s) => code.includes(s));
+  if (!search) {
+    console.error(`PATCH FAILED: "${name}" - search string not found`);
+    console.error(`  Looking for one of: ${searches.map((s) => s.substring(0, 100)).join(" | ")}...`);
+    process.exit(1);
+  }
+  const count = code.split(search).length - 1;
+  if (count > 1) {
+    console.error(`PATCH WARNING: "${name}" - search string found ${count} times, replacing all`);
+  }
+  code = code.split(search).join(replace);
+  patches.push(name);
+})();
 
 // Patch 3: Fix app root path detection (ss function)
 // Original: gets root by stripping exe name from app.getPath("module")
