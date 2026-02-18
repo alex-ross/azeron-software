@@ -118,7 +118,7 @@ sudo udevadm trigger
 
 ### Quick start
 
-Install build dependencies for your distro:
+Install build dependencies:
 
 **Arch Linux:**
 
@@ -142,19 +142,26 @@ sudo dnf install hidapi-devel libusb1-devel nodejs npm p7zip
 
 ```bash
 brew install node dfu-util libusb hidapi python@3
-git clone https://github.com/renatoi/azeron-linux.git
-cd azeron-linux
-bash scripts/setup-macos.sh
-npm run build:mac
 ```
 
 Then clone and build:
+
+**Linux builds (AppImage + pacman):**
 
 ```bash
 git clone https://github.com/renatoi/azeron-linux.git
 cd azeron-linux
 bash scripts/setup.sh
 npm run build
+```
+
+**macOS builds (Apple Silicon):**
+
+```bash
+git clone https://github.com/renatoi/azeron-linux.git
+cd azeron-linux
+bash scripts/setup-macos.sh
+npm run build:mac
 ```
 
 The setup script installs npm dependencies, rebuilds `node-hid` for Linux, applies Linux patches, and installs udev rules. Build output goes to the `output/` directory.
